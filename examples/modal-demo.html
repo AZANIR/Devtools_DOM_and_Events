@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -244,33 +244,33 @@
 
   <body>
     <header>
-      <h1>Modals Playground — чтобы тренировать DevTools → Sources</h1>
+      <h1>Modals Playground — щоб тренувати DevTools → Sources</h1>
       <p class="lead">
-        Тут есть 3 типа: <b>Bootstrap-like</b> (обычные + nested + auto open),
+        Тут є 3 типи: <b>Bootstrap-like</b> (звичайні + nested + auto open),
         <b>SweetAlert-like</b> (dialog/confirm),
         <b>React-like</b> (state-driven, SPA стиль).<br />
-        Подсказка для отладки: включай <span class="kbd">Sources → Event Listener Breakpoints → DOM Mutation / Timer → setTimeout</span>.
+        Підказка для відлагодження: вмикай <span class="kbd">Sources → Event Listener Breakpoints → DOM Mutation / Timer → setTimeout</span>.
       </p>
     </header>
 
     <main>
       <!-- Bootstrap-like -->
       <section class="card" id="bootstrap-like">
-        <h2>1) Bootstrap-like модалки (обычная / nested / auto open)</h2>
+        <h2>1) Bootstrap-like модалки (звичайна / nested / auto open)</h2>
         <p class="desc">
-          Реализация без библиотек, но очень похожая по поведению: overlay, focus, ESC, клик по фону, nested.
-          Есть модалка, которая открывается через <span class="kbd">setTimeout</span>.
+          Реалізація без бібліотек, але дуже схожа за поведінкою: overlay, focus, ESC, клік по фону, nested.
+          Є модалка, яка відкривається через <span class="kbd">setTimeout</span>.
         </p>
 
         <div class="row">
           <button id="btnOpenBasic" class="btn-info">Open basic modal</button>
           <button id="btnOpenNested" class="btn-warn">Open parent (with nested)</button>
           <button id="btnAuto" class="btn-ok">Auto-open in 3s</button>
-          <span class="pill">Закрытие: <span class="kbd">ESC</span> / клик по фону / кнопка</span>
+          <span class="pill">Закриття: <span class="kbd">ESC</span> / клік по фону / кнопка</span>
         </div>
 
         <p class="note">
-          Тренировка: включи <b>DOM Mutation</b> breakpoint — и нажми кнопки. Код остановится в момент вставки/изменения DOM.
+          Тренування: вмикни <b>DOM Mutation</b> breakpoint — і натисни кнопки. Код зупиниться в момент вставки/зміни DOM.
         </p>
       </section>
 
@@ -278,8 +278,8 @@
       <section class="card" id="sweetalert-like">
         <h2>2) SweetAlert-like (dialog / confirm)</h2>
         <p class="desc">
-          Попап создаётся динамически через JS (как часто делают кастомные алерты). Удобно ловить через DOM Mutation или
-          breakpoint на функцию <span class="kbd">openSweetAlert()</span>.
+          Попап створюється динамічно через JS (як часто роблять кастомні алерти). Зручно ловити через DOM Mutation або
+          breakpoint на функцію <span class="kbd">openSweetAlert()</span>.
         </p>
 
         <div class="row">
@@ -289,7 +289,7 @@
         </div>
 
         <p class="note">
-          Тренировка: включи <b>Timer → setTimeout</b> breakpoint и нажми “Alert by timer”.
+          Тренування: вмикни <b>Timer → setTimeout</b> breakpoint і натисни "Alert by timer".
         </p>
       </section>
 
@@ -297,8 +297,8 @@
       <section class="card" id="react-like">
         <h2>3) React-like (state-driven, SPA стиль)</h2>
         <p class="desc">
-          Тут нет React, но логика такая же: есть <b>state</b>, при клике меняется состояние,
-          после чего отрисовывается “компонент” модалки.
+          Тут немає React, але логіка така сама: є <b>state</b>, при кліку змінюється стан,
+          після чого відображається "компонент" модалки.
         </p>
 
         <div class="app">
@@ -306,26 +306,26 @@
             <button id="btnOpenReactModal" class="btn-info">Open modal (setState)</button>
             <button id="btnToggleBusy" class="btn-warn">Toggle busy flag</button>
             <button id="btnFakeApiError" class="btn-danger">Simulate API error → modal</button>
-            <span class="pill">Отладка: смотри <span class="kbd">call stack</span> при setState</span>
+            <span class="pill">Відлагодження: дивись <span class="kbd">call stack</span> при setState</span>
           </div>
 
           <div class="state" id="stateView"></div>
 
           <p class="note">
-            Тренировка: поставь breakpoint на <span class="kbd">setState()</span> и посмотри, кто меняет состояние.
-            Или включи <b>Pause on exceptions</b> и нажми “Simulate API error”.
+            Тренування: постав breakpoint на <span class="kbd">setState()</span> і подивись, хто змінює стан.
+            Або вмикни <b>Pause on exceptions</b> і натисни "Simulate API error".
           </p>
         </div>
       </section>
 
       <!-- Extra hints -->
       <section class="card" style="grid-column: span 12;">
-        <h2>Подсказки для DevTools → Sources</h2>
+        <h2>Підказки для DevTools → Sources</h2>
         <p class="desc">
-          1) <b>Event Listener Breakpoints → DOM Mutation</b> — ловит появление/изменение модалки в DOM.<br />
-          2) <b>Timer → setTimeout</b> — ловит авто-попапы.<br />
-          3) <b>Pause on exceptions</b> — ловит модалки, которые открываются в catch/ошибках.<br />
-          4) <b>Call stack</b> — главный ответ “кто открыл?”.
+          1) <b>Event Listener Breakpoints → DOM Mutation</b> — ловить появу/зміну модалки в DOM.<br />
+          2) <b>Timer → setTimeout</b> — ловить авто-попапи.<br />
+          3) <b>Pause on exceptions</b> — ловить модалки, які відкриваються в catch/помилках.<br />
+          4) <b>Call stack</b> — головна відповідь "хто відкрив?".
         </p>
       </section>
     </main>
@@ -339,11 +339,11 @@
           <h3 id="basicTitle">Bootstrap-like: Basic Modal</h3>
         </header>
         <div class="body">
-          Эта модалка вставлена заранее (есть в DOM), но показывается/скрывается через атрибут <span class="kbd">data-open</span>.
+          Ця модалка вставлена заздалегідь (є в DOM), але показується/ховається через атрибут <span class="kbd">data-open</span>.
           <br /><br />
-          Попробуй поймать:
+          Спробуй зловити:
           <ul>
-            <li>DOM Mutation (изменение атрибута overlay)</li>
+            <li>DOM Mutation (зміна атрибута overlay)</li>
             <li>Breakpoint на <span class="kbd">openModal()</span></li>
           </ul>
         </div>
@@ -360,8 +360,8 @@
           <h3 id="parentTitle">Bootstrap-like: Parent Modal (has nested)</h3>
         </header>
         <div class="body">
-          Нажми кнопку ниже, чтобы открыть “дочернюю” модалку поверх текущей.
-          Это частый кейс: nested dialogs/confirm внутри формы.
+          Натисни кнопку нижче, щоб відкрити "дочірню" модалку поверх поточної.
+          Це поширений випадок: nested dialogs/confirm всередині форми.
         </div>
         <div class="footer">
           <button id="btnOpenChild" class="btn-warn">Open child modal</button>
@@ -376,7 +376,7 @@
           <h3 id="childTitle">Bootstrap-like: Child Modal</h3>
         </header>
         <div class="body">
-          Это nested modal. Отладка: посмотри <span class="kbd">call stack</span> и переменную <span class="kbd">activeModalStack</span>.
+          Це nested modal. Відлагодження: подивись <span class="kbd">call stack</span> і змінну <span class="kbd">activeModalStack</span>.
         </div>
         <div class="footer">
           <button class="btn-ok" data-close="overlayChild">Got it</button>
@@ -561,7 +561,7 @@
         openSweetAlert({
           icon: "ℹ️",
           title: "Info",
-          text: "Это кастомный alert (SweetAlert-like). Лови через DOM Mutation или breakpoint на openSweetAlert().",
+          text: "Це кастомний alert (SweetAlert-like). Лови через DOM Mutation або breakpoint на openSweetAlert().",
           buttons: [{ label: "OK", className: "btn-ok", onClick: () => {} }],
         });
       });
@@ -570,7 +570,7 @@
         openSweetAlert({
           icon: "❓",
           title: "Confirm",
-          text: "Подтвердить действие? (Это тестовый confirm с двумя кнопками.)",
+          text: "Підтвердити дію? (Це тестовий confirm з двома кнопками.)",
           buttons: [
             { label: "Cancel", className: "btn-danger", onClick: () => console.log("Cancelled") },
             { label: "Yes", className: "btn-ok", onClick: () => console.log("Confirmed") },
@@ -583,7 +583,7 @@
           openSweetAlert({
             icon: "⏱️",
             title: "Timer alert",
-            text: "Я открылся через setTimeout. В Sources включай Timer → setTimeout breakpoint.",
+            text: "Я відкрився через setTimeout. В Sources вмикай Timer → setTimeout breakpoint.",
             buttons: [{ label: "Close", className: "btn-ok", onClick: () => {} }],
           });
         }, 2000);
@@ -599,7 +599,7 @@
         isModalOpen: false,
         busy: false,
         modalTitle: "React-like modal",
-        modalText: "Открылся через setState → render().",
+        modalText: "Відкрився через setState → render().",
         lastAction: "init",
       };
 
@@ -660,7 +660,7 @@
         setState({
           isModalOpen: true,
           modalTitle: "React-like: Opened by click",
-          modalText: "Это как React: setState → render → вставили модалку в DOM.",
+          modalText: "Це як React: setState → render → вставили модалку в DOM.",
           lastAction: "open_modal_click",
         });
       });
@@ -681,7 +681,7 @@
             isModalOpen: true,
             modalTitle: "React-like: Error modal",
             modalText:
-              "Я открылся из catch после ошибки. Включай Pause on exceptions / Pause on caught exceptions.",
+              "Я відкрився з catch після помилки. Вмикай Pause on exceptions / Pause on caught exceptions.",
             lastAction: "api_call_failed_show_modal",
           });
           return;
