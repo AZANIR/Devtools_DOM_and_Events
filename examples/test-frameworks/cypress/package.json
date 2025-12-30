@@ -1,0 +1,23 @@
+{
+  "name": "devtools-dom-events-cypress-examples",
+  "version": "1.0.0",
+  "description": "Cypress тести для DevTools, DOM та Events",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test": "cypress run"
+  },
+  "keywords": [
+    "cypress",
+    "testing",
+    "devtools",
+    "dom",
+    "events"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "cypress": "^15.0.0"
+  }
+}
+

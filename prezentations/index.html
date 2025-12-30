@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Modals Playground (Bootstrap-like / SweetAlert-like / React-like)</title>
+
+    <style>
+      :root {
+        --bg: #0b1220;
+        --card: rgba(255, 255, 255, 0.06);
+        --card2: rgba(255, 255, 255, 0.09);
+        --text: #e9eefc;
+        --muted: rgba(233, 238, 252, 0.75);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 10px 40px rgba(0, 0, 0, 0.55);
+        --radius: 16px;
+        --btn: rgba(255, 255, 255, 0.12);
+        --btnHover: rgba(255, 255, 255, 0.18);
+        --danger: #ff4d4d;
+        --warn: #ffcc00;
+        --ok: #57d38c;
+        --info: #66b2ff;
+      }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+        background: radial-gradient(1200px 600px at 20% 10%, #223a78 0%, transparent 55%),
+                    radial-gradient(900px 500px at 80% 25%, #3c1b5b 0%, transparent 58%),
+                    radial-gradient(1100px 650px at 50% 90%, #0d6a54 0%, transparent 60%),
+                    var(--bg);
+        color: var(--text);
+      }
+
+      header {
+        padding: 28px 20px 10px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin: 0 0 10px;
+        font-size: 22px;
+        letter-spacing: 0.2px;
+      }
+      p.lead {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px 20px 40px;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 14px;
+      }
+
+      .card {
+        grid-column: span 12;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(8px);
+      }
+
+      @media (min-width: 900px) {
+        .card { grid-column: span 6; }
+      }
+
+      .card h2 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+      .card .desc {
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 13.5px;
+        line-height: 1.45;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      button {
+        appearance: none;
+        border: 1px solid var(--border);
+        background: var(--btn);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 10px 12px;
+        cursor: pointer;
+        transition: 140ms ease;
+        font-weight: 600;
+        letter-spacing: 0.1px;
+      }
+      button:hover { background: var(--btnHover); transform: translateY(-1px); }
+      button:active { transform: translateY(0); opacity: 0.95; }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12.5px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: var(--card2);
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+
+      .kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        background: rgba(255, 255, 255, 0.08);
+        padding: 2px 6px;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: rgba(233, 238, 252, 0.9);
+      }
+
+      /* ===== Modal Base ===== */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        place-items: center;
+        padding: 18px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(4px);
+        z-index: 999;
+      }
+      .overlay[data-open="true"] { display: grid; }
+
+      .modal {
+        width: min(560px, 100%);
+        background: rgba(20, 26, 45, 0.92);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transform: translateY(8px) scale(0.99);
+        opacity: 0;
+        transition: 180ms ease;
+      }
+      .overlay[data-open="true"] .modal {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+
+      .modal header {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid rgba(255,255,255,0.10);
+        max-width: unset;
+        margin: 0;
+      }
+      .modal header h3 {
+        margin: 0;
+        font-size: 14.5px;
+      }
+      .modal .body {
+        padding: 14px;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 13.5px;
+      }
+      .modal .footer {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        padding: 12px 14px 14px;
+        border-top: 1px solid rgba(255,255,255,0.10);
+      }
+
+      .btn-danger { border-color: rgba(255,77,77,0.4); }
+      .btn-warn { border-color: rgba(255,204,0,0.35); }
+      .btn-ok { border-color: rgba(87,211,140,0.35); }
+      .btn-info { border-color: rgba(102,178,255,0.35); }
+
+      /* ===== "SweetAlert-like" toast/dialog styles ===== */
+      .sa-dialog {
+        width: min(460px, 100%);
+        border-radius: 18px;
+      }
+      .sa-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        margin: 6px auto 10px;
+        border: 1px solid rgba(255,255,255,0.14);
+        background: rgba(255,255,255,0.07);
+        font-size: 26px;
+      }
+      .sa-title {
+        text-align: center;
+        color: var(--text);
+        margin: 0 0 6px;
+      }
+      .sa-text {
+        text-align: center;
+        margin: 0;
+      }
+
+      /* ===== "React-like" app panel ===== */
+      .app {
+        border: 1px dashed rgba(255,255,255,0.22);
+        border-radius: 16px;
+        padding: 14px;
+        background: rgba(0,0,0,0.18);
+      }
+      .app .state {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-size: 12.5px;
+        color: rgba(233, 238, 252, 0.85);
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 12px;
+        padding: 10px 12px;
+        margin: 10px 0 0;
+        overflow: auto;
+      }
+
+      /* ===== Small helper ===== */
+      .note {
+        margin-top: 12px;
+        font-size: 12.5px;
+        color: rgba(233,238,252,0.72);
+      }
+      a { color: #b7d2ff; }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>Modals Playground — чтобы тренировать DevTools → Sources</h1>
+      <p class="lead">
+        Тут есть 3 типа: <b>Bootstrap-like</b> (обычные + nested + auto open),
+        <b>SweetAlert-like</b> (dialog/confirm),
+        <b>React-like</b> (state-driven, SPA стиль).<br />
+        Подсказка для отладки: включай <span class="kbd">Sources → Event Listener Breakpoints → DOM Mutation / Timer → setTimeout</span>.
+      </p>
+    </header>
+
+    <main>
+      <!-- Bootstrap-like -->
+      <section class="card" id="bootstrap-like">
+        <h2>1) Bootstrap-like модалки (обычная / nested / auto open)</h2>
+        <p class="desc">
+          Реализация без библиотек, но очень похожая по поведению: overlay, focus, ESC, клик по фону, nested.
+          Есть модалка, которая открывается через <span class="kbd">setTimeout</span>.
+        </p>
+
+        <div class="row">
+          <button id="btnOpenBasic" class="btn-info">Open basic modal</button>
+          <button id="btnOpenNested" class="btn-warn">Open parent (with nested)</button>
+          <button id="btnAuto" class="btn-ok">Auto-open in 3s</button>
+          <span class="pill">Закрытие: <span class="kbd">ESC</span> / клик по фону / кнопка</span>
+        </div>
+
+        <p class="note">
+          Тренировка: включи <b>DOM Mutation</b> breakpoint — и нажми кнопки. Код остановится в момент вставки/изменения DOM.
+        </p>
+      </section>
+
+      <!-- SweetAlert-like -->
+      <section class="card" id="sweetalert-like">
+        <h2>2) SweetAlert-like (dialog / confirm)</h2>
+        <p class="desc">
+          Попап создаётся динамически через JS (как часто делают кастомные алерты). Удобно ловить через DOM Mutation или
+          breakpoint на функцию <span class="kbd">openSweetAlert()</span>.
+        </p>
+
+        <div class="row">
+          <button id="btnSAInfo" class="btn-info">Show info alert</button>
+          <button id="btnSAConfirm" class="btn-warn">Show confirm dialog</button>
+          <button id="btnSATimer" class="btn-ok">Alert by timer (2s)</button>
+        </div>
+
+        <p class="note">
+          Тренировка: включи <b>Timer → setTimeout</b> breakpoint и нажми “Alert by timer”.
+        </p>
+      </section>
+
+      <!-- React-like -->
+      <section class="card" id="react-like">
+        <h2>3) React-like (state-driven, SPA стиль)</h2>
+        <p class="desc">
+          Тут нет React, но логика такая же: есть <b>state</b>, при клике меняется состояние,
+          после чего отрисовывается “компонент” модалки.
+        </p>
+
+        <div class="app">
+          <div class="row">
+            <button id="btnOpenReactModal" class="btn-info">Open modal (setState)</button>
+            <button id="btnToggleBusy" class="btn-warn">Toggle busy flag</button>
+            <button id="btnFakeApiError" class="btn-danger">Simulate API error → modal</button>
+            <span class="pill">Отладка: смотри <span class="kbd">call stack</span> при setState</span>
+          </div>
+
+          <div class="state" id="stateView"></div>
+
+          <p class="note">
+            Тренировка: поставь breakpoint на <span class="kbd">setState()</span> и посмотри, кто меняет состояние.
+            Или включи <b>Pause on exceptions</b> и нажми “Simulate API error”.
+          </p>
+        </div>
+      </section>
+
+      <!-- Extra hints -->
+      <section class="card" style="grid-column: span 12;">
+        <h2>Подсказки для DevTools → Sources</h2>
+        <p class="desc">
+          1) <b>Event Listener Breakpoints → DOM Mutation</b> — ловит появление/изменение модалки в DOM.<br />
+          2) <b>Timer → setTimeout</b> — ловит авто-попапы.<br />
+          3) <b>Pause on exceptions</b> — ловит модалки, которые открываются в catch/ошибках.<br />
+          4) <b>Call stack</b> — главный ответ “кто открыл?”.
+        </p>
+      </section>
+    </main>
+
+    <!-- ===================== Modals Containers ===================== -->
+
+    <!-- Bootstrap-like basic modal -->
+    <div class="overlay" id="overlayBasic" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="basicTitle">
+        <header>
+          <h3 id="basicTitle">Bootstrap-like: Basic Modal</h3>
+        </header>
+        <div class="body">
+          Эта модалка вставлена заранее (есть в DOM), но показывается/скрывается через атрибут <span class="kbd">data-open</span>.
+          <br /><br />
+          Попробуй поймать:
+          <ul>
+            <li>DOM Mutation (изменение атрибута overlay)</li>
+            <li>Breakpoint на <span class="kbd">openModal()</span></li>
+          </ul>
+        </div>
+        <div class="footer">
+          <button class="btn-ok" data-close="overlayBasic">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap-like nested modals -->
+    <div class="overlay" id="overlayParent" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="parentTitle">
+        <header>
+          <h3 id="parentTitle">Bootstrap-like: Parent Modal (has nested)</h3>
+        </header>
+        <div class="body">
+          Нажми кнопку ниже, чтобы открыть “дочернюю” модалку поверх текущей.
+          Это частый кейс: nested dialogs/confirm внутри формы.
+        </div>
+        <div class="footer">
+          <button id="btnOpenChild" class="btn-warn">Open child modal</button>
+          <button class="btn-ok" data-close="overlayParent">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="overlayChild" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="childTitle">
+        <header>
+          <h3 id="childTitle">Bootstrap-like: Child Modal</h3>
+        </header>
+        <div class="body">
+          Это nested modal. Отладка: посмотри <span class="kbd">call stack</span> и переменную <span class="kbd">activeModalStack</span>.
+        </div>
+        <div class="footer">
+          <button class="btn-ok" data-close="overlayChild">Got it</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SweetAlert-like container (created dynamically too, but we keep one reusable overlay) -->
+    <div class="overlay" id="overlaySweet" aria-hidden="true"></div>
+
+    <!-- React-like modal container (rendered via "render()" from state) -->
+    <div class="overlay" id="overlayReact" aria-hidden="true"></div>
+
+    <script>
+      /***********************
+       * Utility: focus trap (simple)
+       ************************/
+      function getFocusable(container) {
+        return Array.from(
+          container.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          )
+        ).filter((el) => !el.hasAttribute("disabled") && !el.getAttribute("aria-hidden"));
+      }
+
+      function trapFocus(modalEl) {
+        const focusables = getFocusable(modalEl);
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (first) first.focus();
+
+        function onKeyDown(e) {
+          if (e.key !== "Tab") return;
+          if (focusables.length === 0) return;
+
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+
+        modalEl.addEventListener("keydown", onKeyDown);
+        return () => modalEl.removeEventListener("keydown", onKeyDown);
+      }
+
+      /***********************
+       * Bootstrap-like modals
+       ************************/
+      const activeModalStack = [];
+      const focusReleaseFns = new Map();
+
+      function openModal(overlayId) {
+        const overlay = document.getElementById(overlayId);
+        if (!overlay) return;
+
+        overlay.dataset.open = "true";
+        overlay.setAttribute("aria-hidden", "false");
+        activeModalStack.push(overlayId);
+
+        const modal = overlay.querySelector(".modal");
+        if (modal) {
+          const release = trapFocus(modal);
+          focusReleaseFns.set(overlayId, release);
+        }
+      }
+
+      function closeModal(overlayId) {
+        const overlay = document.getElementById(overlayId);
+        if (!overlay) return;
+
+        overlay.dataset.open = "false";
+        overlay.setAttribute("aria-hidden", "true");
+
+        const idx = activeModalStack.lastIndexOf(overlayId);
+        if (idx >= 0) activeModalStack.splice(idx, 1);
+
+        const release = focusReleaseFns.get(overlayId);
+        if (release) {
+          release();
+          focusReleaseFns.delete(overlayId);
+        }
+      }
+
+      function closeTopModal() {
+        const top = activeModalStack[activeModalStack.length - 1];
+        if (top) closeModal(top);
+      }
+
+      // Close on overlay click (but not on modal click)
+      document.addEventListener("click", (e) => {
+        const overlay = e.target.closest(".overlay");
+        if (!overlay) return;
+
+        const clickedInsideModal = e.target.closest(".modal");
+        if (clickedInsideModal) return;
+
+        // Close only if this overlay is the top modal
+        if (activeModalStack[activeModalStack.length - 1] === overlay.id) {
+          closeModal(overlay.id);
+        }
+      });
+
+      // Close by ESC (only top modal)
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeTopModal();
+      });
+
+      // Buttons with data-close
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-close]");
+        if (!btn) return;
+        closeModal(btn.getAttribute("data-close"));
+      });
+
+      // Bootstrap-like buttons
+      document.getElementById("btnOpenBasic").addEventListener("click", () => openModal("overlayBasic"));
+      document.getElementById("btnOpenNested").addEventListener("click", () => openModal("overlayParent"));
+      document.getElementById("btnOpenChild").addEventListener("click", () => openModal("overlayChild"));
+
+      document.getElementById("btnAuto").addEventListener("click", () => {
+        // auto open using setTimeout (good for Timer breakpoint)
+        setTimeout(() => {
+          openModal("overlayBasic");
+        }, 3000);
+      });
+
+      /***********************
+       * SweetAlert-like (custom dialog/confirm)
+       ************************/
+      function openSweetAlert({ icon, title, text, buttons }) {
+        const overlay = document.getElementById("overlaySweet");
+
+        // DOM Mutation-friendly: rewrite overlay contents each time
+        overlay.innerHTML = `
+          <div class="modal sa-dialog" role="dialog" aria-modal="true">
+            <header style="text-align:center;">
+              <div class="sa-icon">${icon}</div>
+              <h3 class="sa-title">${title}</h3>
+            </header>
+            <div class="body">
+              <p class="sa-text">${text}</p>
+            </div>
+            <div class="footer" style="justify-content:center;">
+              ${buttons
+                .map(
+                  (b, i) =>
+                    `<button data-sa="${i}" class="${b.className || ""}">${b.label}</button>`
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+
+        openModal("overlaySweet");
+
+        // Hook buttons
+        const handlers = buttons.map((b) => b.onClick);
+        overlay.querySelectorAll("[data-sa]").forEach((btn) => {
+          btn.addEventListener(
+            "click",
+            () => {
+              try {
+                const idx = Number(btn.getAttribute("data-sa"));
+                const fn = handlers[idx];
+                closeModal("overlaySweet");
+                if (typeof fn === "function") fn();
+              } catch (err) {
+                // nice spot for "Pause on exceptions"
+                console.error("SweetAlert handler error:", err);
+                throw err;
+              }
+            },
+            { once: true }
+          );
+        });
+      }
+
+      document.getElementById("btnSAInfo").addEventListener("click", () => {
+        openSweetAlert({
+          icon: "ℹ️",
+          title: "Info",
+          text: "Это кастомный alert (SweetAlert-like). Лови через DOM Mutation или breakpoint на openSweetAlert().",
+          buttons: [{ label: "OK", className: "btn-ok", onClick: () => {} }],
+        });
+      });
+
+      document.getElementById("btnSAConfirm").addEventListener("click", () => {
+        openSweetAlert({
+          icon: "❓",
+          title: "Confirm",
+          text: "Подтвердить действие? (Это тестовый confirm с двумя кнопками.)",
+          buttons: [
+            { label: "Cancel", className: "btn-danger", onClick: () => console.log("Cancelled") },
+            { label: "Yes", className: "btn-ok", onClick: () => console.log("Confirmed") },
+          ],
+        });
+      });
+
+      document.getElementById("btnSATimer").addEventListener("click", () => {
+        setTimeout(() => {
+          openSweetAlert({
+            icon: "⏱️",
+            title: "Timer alert",
+            text: "Я открылся через setTimeout. В Sources включай Timer → setTimeout breakpoint.",
+            buttons: [{ label: "Close", className: "btn-ok", onClick: () => {} }],
+          });
+        }, 2000);
+      });
+
+      /***********************
+       * React-like: tiny state + render loop
+       ************************/
+      const reactOverlay = document.getElementById("overlayReact");
+      const stateView = document.getElementById("stateView");
+
+      let state = {
+        isModalOpen: false,
+        busy: false,
+        modalTitle: "React-like modal",
+        modalText: "Открылся через setState → render().",
+        lastAction: "init",
+      };
+
+      function render() {
+        // Render "UI"
+        stateView.textContent = JSON.stringify(state, null, 2);
+
+        // Render modal conditionally (like React render)
+        if (state.isModalOpen) {
+          reactOverlay.innerHTML = `
+            <div class="modal" role="dialog" aria-modal="true">
+              <header>
+                <h3>${escapeHtml(state.modalTitle)}</h3>
+              </header>
+              <div class="body">
+                <div style="margin-bottom:10px;">
+                  ${escapeHtml(state.modalText)}
+                </div>
+                <div class="pill" style="justify-content:center; width:fit-content; margin:0 auto;">
+                  busy: <span class="kbd">${String(state.busy)}</span>
+                  &nbsp;| lastAction: <span class="kbd">${escapeHtml(state.lastAction)}</span>
+                </div>
+              </div>
+              <div class="footer">
+                <button id="reactOk" class="btn-ok">${state.busy ? "Working..." : "Close"}</button>
+              </div>
+            </div>
+          `;
+          openModal("overlayReact");
+
+          const btn = document.getElementById("reactOk");
+          btn.disabled = state.busy;
+          btn.addEventListener("click", () => {
+            setState({ isModalOpen: false, lastAction: "close_modal" });
+          });
+        } else {
+          closeModal("overlayReact");
+          reactOverlay.innerHTML = "";
+        }
+      }
+
+      function setState(patch) {
+        // Great breakpoint spot: who calls setState?
+        state = { ...state, ...patch };
+        render();
+      }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      document.getElementById("btnOpenReactModal").addEventListener("click", () => {
+        setState({
+          isModalOpen: true,
+          modalTitle: "React-like: Opened by click",
+          modalText: "Это как React: setState → render → вставили модалку в DOM.",
+          lastAction: "open_modal_click",
+        });
+      });
+
+      document.getElementById("btnToggleBusy").addEventListener("click", () => {
+        setState({ busy: !state.busy, lastAction: "toggle_busy" });
+      });
+
+      document.getElementById("btnFakeApiError").addEventListener("click", async () => {
+        setState({ busy: true, lastAction: "api_call_start" });
+
+        try {
+          await fakeApiCallThatFails(); // will throw
+        } catch (e) {
+          // Good for "Pause on (caught) exceptions"
+          setState({
+            busy: false,
+            isModalOpen: true,
+            modalTitle: "React-like: Error modal",
+            modalText:
+              "Я открылся из catch после ошибки. Включай Pause on exceptions / Pause on caught exceptions.",
+            lastAction: "api_call_failed_show_modal",
+          });
+          return;
+        }
+
+        setState({ busy: false, lastAction: "api_call_success" });
+      });
+
+      function fakeApiCallThatFails() {
+        return new Promise((_, reject) => {
+          setTimeout(() => {
+            reject(new Error("Simulated API failure"));
+          }, 600);
+        });
+      }
+
+      // Initial render
+      render();
+    </script>
+  </body>
+</html>
